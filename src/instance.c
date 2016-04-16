@@ -1,4 +1,5 @@
 #include "instance.h"
+#include <inttypes.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -17,7 +18,7 @@ struct instance read_instance(const char* filename) {
     struct instance inst;
     int n_read;
     
-    n_read = fscanf(fd, "%u %u %u %u", &inst.n_items, &inst.n_black, &inst.n_white, &inst.capacity);
+    n_read = fscanf(fd, "%" SCNuFAST32 " %" SCNuFAST32 " %" SCNuFAST32 " %" SCNuFAST32, &inst.n_items, &inst.n_black, &inst.n_white, &inst.capacity);
     
     if(n_read != 4) {
         printf("Error reading the for initial values\n");
@@ -30,13 +31,13 @@ struct instance read_instance(const char* filename) {
     }
     
     if(inst.n_black > inst.n_items) {
-        printf( "Number of black items (%d) cannot be bigger than the total number of items (%d)\n",
+        printf( "Number of black items (%" SCNuFAST32 ") cannot be bigger than the total number of items (%" SCNuFAST32 ")\n",
                 inst.n_black, inst.n_items);
         exit(EXIT_FAILURE);
     }
     
     if(inst.n_white > inst.n_items) {
-        printf( "Number of white items (%d) cannot be bigger than the total number of items (%d)\n",
+        printf( "Number of white items (%" SCNuFAST32 ") cannot be bigger than the total number of items (%" SCNuFAST32 ")\n",
                 inst.n_white, inst.n_items);
         exit(EXIT_FAILURE);
     }
@@ -94,7 +95,7 @@ struct instance read_instance(const char* filename) {
     }
     
     for(ptrdiff_t i = 0; i < inst.n_items; i++) {
-        n_read = fscanf(fd, "%u", &inst.weights[i]);
+        n_read = fscanf(fd, "%" SCNuFAST32, &inst.weights[i]);
         
         if(n_read != 1) {
             printf("Error reading weights\n");
@@ -103,7 +104,7 @@ struct instance read_instance(const char* filename) {
     }
     
     for(ptrdiff_t i = 0; i < inst.n_items; i++) {
-        n_read = fscanf(fd, "%u", &inst.profits[i]);
+        n_read = fscanf(fd, "%" SCNuFAST32, &inst.profits[i]);
         
         if(n_read != 1) {
             printf("Error reading profits\n");
@@ -122,14 +123,15 @@ struct instance read_instance(const char* filename) {
 }
 
 void print_instance(const struct instance* inst) {
-    printf("Number of items: %u (%u black and %u white)\n", inst->n_items, inst->n_black, inst->n_white);
+    printf( "Number of items: %" SCNuFAST32 " (%" SCNuFAST32 " black and %" SCNuFAST32 " white)\n",
+            inst->n_items, inst->n_black, inst->n_white);
     printf("Item weights: ");
     for(ptrdiff_t i = 0; i < inst->n_items; i++) {
-        printf("%u, ", inst->weights[i]);
+        printf("%" SCNuFAST32 ", ", inst->weights[i]);
     }
     printf("\nItem profits: ");
     for(ptrdiff_t i = 0; i < inst->n_items; i++) {
-        printf("%u, ", inst->profits[i]);
+        printf("%" SCNuFAST32 ", ", inst->profits[i]);
     }
     printf("\nItem colours: ");
     for(ptrdiff_t i = 0; i < inst->n_items; i++) {

@@ -13,7 +13,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format -std=gnu11")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
 endif()
 
 include_directories("src")
