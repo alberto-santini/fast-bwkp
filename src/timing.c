@@ -1,5 +1,4 @@
 #include "timing.h"
-#include <stdio.h>
 
 void get_monotonic_time(struct timespec* ts) {
     #ifdef __MACH__
