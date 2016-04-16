@@ -38,6 +38,7 @@ void print_solution(const char* instance, const struct lagrange_solution* best, 
         stddev += powf(times[i] - avg, 2);
     }
     
+    stddev *= 1 / (float)reruns;
     stddev = sqrtf(stddev);
     
     FILE* fd;
@@ -49,7 +50,8 @@ void print_solution(const char* instance, const struct lagrange_solution* best, 
         exit(EXIT_FAILURE);
     }
     
-    int printed = fprintf(fd, "%s,%.6f,%" SCNuFAST32 ",%.6lf,%.6lf\n", instance, best->lagr_obj, best->capacity_violation, avg, stddev);
+    int printed = fprintf(  fd, "%s,%.6f,%" SCNuFAST32 ",%.6lf,%.6lf\n",
+                            instance, best->lagr_obj, best->capacity_violation, avg, stddev);
     
     if(printed < 0) {
         printf("Error printing results\n");
