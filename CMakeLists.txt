@@ -14,6 +14,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format -std=gnu11")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm")
 endif()
 
 include_directories("src")
