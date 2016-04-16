@@ -30,12 +30,14 @@ struct instance read_instance(const char* filename) {
     }
     
     if(inst.n_black > inst.n_items) {
-        printf("Number of black items cannot be bigger than the total number of items\n");
+        printf( "Number of black items (%d) cannot be bigger than the total number of items (%d)\n",
+                inst.n_black, inst.n_items);
         exit(EXIT_FAILURE);
     }
     
     if(inst.n_white > inst.n_items) {
-        printf("Number of white items cannot be bigger than the total number of items\n");
+        printf( "Number of white items (%d) cannot be bigger than the total number of items (%d)\n",
+                inst.n_white, inst.n_items);
         exit(EXIT_FAILURE);
     }
     
