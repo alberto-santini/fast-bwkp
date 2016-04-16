@@ -6,3 +6,7 @@ A similar project, [bwbp](https://github.com/alberto-santini/bwbp) contains code
 
 * Folder `data` contains a test dataset based on Pisinger's hard knapsack instances.
 * Folder `src` contains the source code.
+
+##### License
+
+This software is distributed under the GNU General Public License v3, as detailed in `LICENSE.txt`.
