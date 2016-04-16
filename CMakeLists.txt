@@ -14,7 +14,6 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format -std=gnu11")
-    target_link_libraries(fast-bwkp m)
 endif()
 
 include_directories("src")
@@ -34,3 +33,7 @@ set(SOURCE_FILES
 )
 
 add_executable(fast-bwkp ${SOURCE_FILES})
+
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    target_link_libraries(fast-bwkp m)
+endif()
