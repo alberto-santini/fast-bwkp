@@ -32,7 +32,14 @@ set(SOURCE_FILES
     src/timing.h
 )
 
+add_custom_command(OUTPUT hammersort.o COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/src && gfortran -c -o ${CMAKE_CURRENT_BINARY_DIR}/hammersort.o hammersort.f)
+add_library(hammersort STATIC hammersort.o)
+set_source_files_properties(hammersort.o PROPERTIES EXTERNAL_OBJECT true GENERATED true)
+set_target_properties(hammersort PROPERTIES LINKER_LANGUAGE C)
+
 add_executable(fast-bwkp ${SOURCE_FILES})
+
+target_link_libraries(fast-bwkp gfortran hammersort)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(fast-bwkp m)
