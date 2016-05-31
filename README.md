@@ -14,7 +14,7 @@ This project contains Work-in-Progress code for the Black and White Knapsack Pro
   1. `cd fast-bwkp`
   2. `mkdir build`
   3. `cd build`
-3. Run CMake: `cmake -DCPLEX_ROOT_DIR=<path>`
+3. Run CMake: `cmake -DCPLEX_ROOT_DIR=<path> ..`
   * `<path>` is such that the following file exists: `<path>/cplex/include/ilcplex/cplex.h`.
   * Additionally, you might tell cmake if you want a debug build (slower, not optimised, with debug symbols) by using `-DCMAKE_BUILD_TYPE=Debug` or a release build (faster, O3-optimised, without debug symbols) by using `-DCMAKE_BUILD_TYPE=Release`.
 4. Run make: `make`
