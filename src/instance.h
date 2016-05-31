@@ -7,14 +7,30 @@
 enum colour_t { BLACK, WHITE };
 
 struct instance {
-    uint_fast32_t n_items;
-    uint_fast32_t n_black;
-    uint_fast32_t n_white;
-    uint_fast32_t capacity;
-    enum colour_t* colours;
-    uint_fast32_t* weights;
-    uint_fast32_t* profits;
-    float* pws;
+  // Total number of items
+  uint_fast32_t n_items;
+
+  // Number of black items
+  uint_fast32_t n_black;
+
+  // Number of white items
+  uint_fast32_t n_white;
+
+  // Total bin capacity
+  uint_fast32_t capacity;
+
+  // Vector of weights, one for each item
+  uint_fast32_t* weights;
+
+  // Vector of profits, one for each items
+  uint_fast32_t* profits;
+
+  // Vector of colours, one for each item
+  enum colour_t* colours;
+
+  // For convenience, we store in this vector
+  // the profit/weight ratios, one for each item
+  float* pws;
 };
 
 // Construct an instance from the data contained in
@@ -27,14 +43,5 @@ void print_instance(const struct instance* inst);
 // Deallocates dynamically-allocated arrays in the
 // instance
 void free_instance(struct instance* inst);
-
-// Swaps two items in the order used to store their
-// colours, weights, profits and p/w ratios.
-void swap_items(struct instance* inst, ptrdiff_t i1, ptrdiff_t i2);
-
-// Assuming that the instance is already sorted by p/w ratios,
-// fills multipliers with the unique p/w ratios and sets
-// n_multipliers to their number.
-void get_unique_multipliers(struct instance* inst, float* multipliers, ptrdiff_t* n_multipliers);
 
 #endif

@@ -3,22 +3,18 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "instance.h"
 
-// Sorts a vector of floats in-place, and permutes a
-// second vector accordingly.
-void in_place_heapsort_desc(float* sort_ary, uint_fast32_t* perm_ary, ptrdiff_t sz);
+// Given a vector of values and their indices ids = {0,...,sz-1}
+// permutes the indices such that, at the end, values[ids[0]] will
+// be the biggest element, ..., values[ids[sz-1]] the smallest.
+void heapsort_desc(const float* values, ptrdiff_t* ids, ptrdiff_t sz);
 
-// Sorts a vector of floats in-place, and permutes a
-// second vector accordingly.
-void in_place_quickersort_desc(float** sort_ary, uint_fast32_t** perm_ary, ptrdiff_t sz);
-void in_place_quickersort_impl(float* sort_ary, uint_fast32_t* perm_ary, ptrdiff_t lower, ptrdiff_t upper);
+// Implementation detail of heapsort_desc
+void sift_desc(const float* values, ptrdiff_t* ids, ptrdiff_t root, ptrdiff_t last);
 
-// Orders the items in the instance by p/w ratios,
-// changing by the same permutation also the
-// vectors with colours, weights, and profits.
-void in_place_heapsort_pw_asc(struct instance* inst);
-
-void print(const float* sv, const uint_fast32_t* pv, ptrdiff_t sz);
+// Given a vector of values, sorts them and discards any repeated
+// element. It returns a new vector and does not modify the old one.
+// It writes in unique_sz the number of elements in the returned vector.
+float* unique_desc(const float* values, ptrdiff_t sz, ptrdiff_t* unique_sz);
 
 #endif

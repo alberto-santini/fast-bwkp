@@ -1,143 +1,67 @@
 #include "sort.h"
-#include <stdbool.h>
-#include <inttypes.h>
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <float.h>
+#include <stdbool.h>
 
-void in_place_heapsort_desc(float* sort_ary, uint_fast32_t* perm_ary, ptrdiff_t sz) {
-    assert(sort_ary != NULL);
-    assert(perm_ary != NULL);
+#define SWAP(x,y) tmp = x; x = y; y = tmp;
 
-    float t, pt;
-    ptrdiff_t n = sz, parent = sz / 2, idx, child;
+void sift_desc(const float* values, ptrdiff_t* ids, ptrdiff_t root, ptrdiff_t last) {
+  ptrdiff_t mchild, tmp;
 
-    #define ASSIGN_FROM_ARY(i) t = sort_ary[i]; pt = perm_ary[i];
-    #define ASSIGN_TO_ARY(i) sort_ary[i] = t; perm_ary[i] = pt;
-    #define ASSIGN_WITHIN_ARY(i, j) \
-    sort_ary[i] = sort_ary[j]; \
-    perm_ary[i] = perm_ary[j];
+  while(2 * root <= last) {
+    if(2 * root == last) { mchild = last; }
+    else if(values[ids[2 * root]] < values[ids[2 * root + 1]]) { mchild = 2 * root; }
+    else { mchild = 2 * root + 1; }
 
-    while(true) {
-        if(parent > 0) {
-            parent--;
-            ASSIGN_FROM_ARY(parent)
-        } else {
-            if(--n == 0) { return; }
-            ASSIGN_FROM_ARY(n)
-            ASSIGN_WITHIN_ARY(n, 0)
-        }
-
-        idx = parent;
-        child = idx * 2 + 1;
-
-        while(child < n) {
-            if(child + 1 < n && sort_ary[child + 1] < sort_ary[child]) { child++; }
-            if(sort_ary[child] < t) {
-                ASSIGN_WITHIN_ARY(idx, child)
-                idx = child;
-                child = idx * 2 + 1;
-            } else { break; }
-        }
-        ASSIGN_TO_ARY(idx)
-    }
+    if(values[ids[root]] > values[ids[mchild]]) {
+      SWAP(ids[root], ids[mchild])
+      root = mchild;
+    } else { break; }
+  }
 }
 
-void in_place_heapsort_pw_asc(struct instance* inst) {
-    assert(inst != NULL);
+void heapsort_desc(const float* values, ptrdiff_t* ids, ptrdiff_t sz) {
+  ptrdiff_t tmp;
 
-    enum colour_t t_col;
-    float t_wgt, t_prf, t_pw;
-
-    #define ASSIGN_FROM_INSTANCE(i) \
-    t_col = inst->colours[i]; \
-    t_wgt = inst->weights[i]; \
-    t_prf = inst->profits[i]; \
-    t_pw = inst->pws[i];
-
-    #define ASSIGN_TO_INSTANCE(i) \
-    inst->colours[i] = t_col; \
-    inst->weights[i] = t_wgt; \
-    inst->profits[i] = t_prf; \
-    inst->pws[i] = t_pw;
-
-    #define ASSIGN_WITHIN_INSTANCE(i, j) \
-    inst->colours[i] = inst->colours[j]; \
-    inst->weights[i] = inst->weights[j]; \
-    inst->profits[i] = inst->profits[j]; \
-    inst->pws[i] = inst->pws[j];
-
-    ptrdiff_t n = inst->n_items;
-    ptrdiff_t parent = n / 2;
-    ptrdiff_t idx, child;
-
-    while(true) {
-        if(parent > 0) {
-            parent--;
-            ASSIGN_FROM_INSTANCE(parent)
-        } else {
-            if(--n == 0) { return; }
-            ASSIGN_FROM_INSTANCE(n)
-            ASSIGN_WITHIN_INSTANCE(n, 0)
-        }
-
-        idx = parent;
-        child = idx * 2 + 1;
-
-        while(child < n) {
-            if(child + 1 < n && inst->pws[child + 1] > inst->pws[child]) { child++; }
-            if(inst->pws[child] > t_pw) {
-                ASSIGN_WITHIN_INSTANCE(idx, child)
-                idx = child;
-                child = idx * 2 + 1;
-            } else { break; }
-        }
-        ASSIGN_TO_INSTANCE(idx)
-    }
+  for(ptrdiff_t i = sz / 2 - 1; i >= 0; i--) { sift_desc(values, ids, i, sz - 1); }
+  for(ptrdiff_t i = sz - 1; i >= 1; i--) {
+    SWAP(ids[0], ids[i])
+    sift_desc(values, ids, 0, i - 1);
+  }
 }
 
-void in_place_quickersort_desc(float** sort_ary, uint_fast32_t** perm_ary, ptrdiff_t sz) {
-        float* sort_enlarged = realloc(*sort_ary, (sz + 1) * sizeof(*sort_enlarged));
-        assert(sort_enlarged != NULL);
-        sort_enlarged[sz] = -FLT_MAX;
+float* unique_desc(const float* values, ptrdiff_t sz, ptrdiff_t* unique_sz) {
+  static const float eps = 1e-6;
 
-        uint_fast32_t* perm_enlarged = realloc(*perm_ary, (sz + 1) * sizeof(*perm_enlarged));
-        assert(perm_enlarged != NULL);
-        perm_enlarged[sz] = 0;
+  ptrdiff_t* ids;
 
-        in_place_quickersort_impl(sort_enlarged, perm_enlarged, 0, sz - 1);
+  ids = malloc(sz * sizeof(*ids));
+  if(ids == NULL) {
+    printf("Cannot allocate memory for ids\n");
+    exit(EXIT_FAILURE);
+  }
 
-        *sort_ary = realloc(sort_enlarged, sz * sizeof(**sort_ary));
-        assert(*sort_ary != NULL);
+  for(ptrdiff_t i = 0; i < sz; i++) { ids[i] = i; }
 
-        *perm_ary = realloc(perm_enlarged, sz * sizeof(**perm_ary));
-        assert(*perm_ary != NULL);
-}
+  heapsort_desc(values, ids, sz);
 
-void in_place_quickersort_impl(float* sort_ary, uint_fast32_t* perm_ary, ptrdiff_t lower, ptrdiff_t upper) {
-    ptrdiff_t i, j;
-    float sort_temp, pivot;
-    uint_fast32_t perm_temp;
+  float* unique;
 
-    #define SWAP(x, y) \
-    sort_temp = sort_ary[x]; sort_ary[x] = sort_ary[y]; sort_ary[y] = sort_temp; \
-    perm_temp = perm_ary[x]; perm_ary[x] = perm_ary[y]; perm_ary[y] = perm_temp;
+  unique = malloc(sz * sizeof(*unique));
+  if(unique == NULL) {
+    printf("Cannot allocate memory for unique\n");
+    exit(EXIT_FAILURE);
+  }
 
-    if(lower < upper) {
-        SWAP(lower, (upper + lower)/2)
-        i = lower;
-        j = upper + 1;
-        pivot = sort_ary[lower];
+  unique[0] = values[ids[0]];
+  *unique_sz = 1;
 
-        while(true) {
-	        do { i++; } while (sort_ary[i] > pivot);
-            do { j--; } while (sort_ary[j] < pivot);
-	        if (j < i) { break; }
-	        SWAP(i, j);
-	    }
-
-	    SWAP(lower, j);
-	    in_place_quickersort_impl(sort_ary, perm_ary, lower, j - 1);
-	    in_place_quickersort_impl(sort_ary, perm_ary, i, upper);
+  for(ptrdiff_t i = 1; i < sz; i++) {
+    if(values[ids[i]] < unique[*unique_sz - 1] - eps) {
+      unique[(*unique_sz)++] = values[ids[i]];
     }
+  }
+
+  return unique;
 }

@@ -6,8 +6,8 @@
 #include <stdio.h>
 
 #ifdef __MACH__
-    #include <mach/clock.h>
-    #include <mach/mach.h>
+  #include <mach/clock.h>
+  #include <mach/mach.h>
 #endif
 
 // Get a nanosecond-precise time in both Linux and Mac OS X.
