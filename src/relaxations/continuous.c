@@ -70,8 +70,8 @@ struct relaxation_solution solve_continuous_relaxation(const struct instance* in
   }
 
   status = CPXaddrows(env, lp, 0, 3, 3 * inst->n_items, rhs, sense, rmatbeg, rmatind, rmatval, NULL, NULL);
-  status = CPXsetdblparam(env, CPX_PARAM_EPOPT, 1e-12);
-  status = CPXsetdblparam(env, CPX_PARAM_EPRHS, 1e-12);
+  status = CPXsetdblparam(env, CPX_PARAM_EPOPT, 1e-9);
+  status = CPXsetdblparam(env, CPX_PARAM_EPRHS, 1e-9);
   status = CPXlpopt(env, lp);
 
   get_monotonic_time(&end);
