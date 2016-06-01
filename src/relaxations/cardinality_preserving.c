@@ -94,7 +94,7 @@ struct relaxation_solution solve_cardinality_preserving_relaxation(const struct 
     sol1 = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound, cap_bound + 1, ids);
     sol2 = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound + 1, cap_bound, ids);
 
-    if(sol1.profit < sol2.profit) {
+    if(sol1.profit > sol2.profit) {
       sol = sol1;
       sol.e_time += sol2.e_time;
     } else {
