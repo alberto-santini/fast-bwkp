@@ -9,6 +9,7 @@ void free_relaxation_solution(struct relaxation_solution* sol) {
 void print_relaxation_solution(const struct relaxation_solution* sol) {
   printf("Relaxation solution:\n");
   printf("\tTotal profit: %.4f\n", sol->profit);
+  printf("\tBound: %.4f\n", sol->bound);
   printf("\tUsed capacity: %.4f\n", sol->used_capacity);
   printf("\tTime (ms): %.4f\n", sol->e_time);
   printf("\tExtra param: %.4f\n", sol->param);
