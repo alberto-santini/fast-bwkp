@@ -123,15 +123,16 @@ struct instance read_instance(const char* filename) {
 }
 
 void print_instance(const struct instance* inst) {
-  printf("Number of items: %" SCNuFAST32 " (%" SCNuFAST32 " black and %" SCNuFAST32 " white)\n",
+  printf("Number of items: %" PRIuFAST32 " (%" PRIuFAST32 " black and %" PRIuFAST32 " white)\n",
           inst->n_items, inst->n_black, inst->n_white);
+  printf("Capacity: %" PRIuFAST32 "\n", inst->capacity);
   printf("\tItem weights:\n");
   for(ptrdiff_t i = 0; i < inst->n_items; i++) {
-    printf("\t%td: %" SCNuFAST32 "\n", i, inst->weights[i]);
+    printf("\t%td: %" PRIuFAST32 "\n", i, inst->weights[i]);
   }
   printf("\nItem profits:\n");
   for(ptrdiff_t i = 0; i < inst->n_items; i++) {
-    printf("\t%td: %" SCNuFAST32 "\n", i, inst->profits[i]);
+    printf("\t%td: %" PRIuFAST32 "\n", i, inst->profits[i]);
   }
   printf("\nItem colours:\n");
   for(ptrdiff_t i = 0; i < inst->n_items; i++) {

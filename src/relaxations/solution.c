@@ -24,3 +24,26 @@ void print_relaxation_solution(const struct relaxation_solution* sol) {
 void write_relaxation_solution_to_file(const struct relaxation_solution* sol, FILE* fp) {
   fprintf(fp, "%.4f,%.4f,%.4f,", sol->bound, sol->used_capacity, sol->e_time);
 }
+
+struct relaxation_solution deep_copy_relaxation_solution(const struct relaxation_solution* sol) {
+  struct relaxation_solution newsol = {
+    .n_items = sol->n_items,
+    .profit = sol->profit,
+    .used_capacity = sol->used_capacity,
+    .e_time = sol->e_time,
+    .bound = sol->bound,
+    .param = sol->param
+  };
+  
+  newsol.coeff = malloc(newsol.n_items * sizeof(*(newsol.coeff)));
+  if(newsol.coeff == NULL) {
+    printf("Cannot allocate memory to copy relaxation solution\n");
+    exit(EXIT_FAILURE);
+  }
+  
+  for(ptrdiff_t i = 0; i < newsol.n_items; i++) {
+    newsol.coeff[i] = sol->coeff[i];
+  }
+  
+  return newsol;
+}

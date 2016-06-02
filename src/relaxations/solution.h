@@ -40,4 +40,7 @@ void print_relaxation_solution(const struct relaxation_solution* sol);
 // Writes info on the soution to file fp.
 void write_relaxation_solution_to_file(const struct relaxation_solution* sol, FILE* fp);
 
+// Makes a deep copy of a solution.
+struct relaxation_solution deep_copy_relaxation_solution(const struct relaxation_solution* sol);
+
 #endif

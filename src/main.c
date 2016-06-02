@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
   struct primal_solution psol;
 
   if(strcmp(argv[2], "desc") == 0) {
-    printf("Instance description:");
+    printf("Instance description:\n");
     print_instance(&inst);
   } else if(strcmp(argv[2], "mip") == 0) {
     printf("Launching MIP solver\n");

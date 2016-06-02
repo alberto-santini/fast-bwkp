@@ -19,10 +19,10 @@ struct relaxation_solution solve_lagrange_relaxation(const struct instance* inst
   for(ptrdiff_t l = 0; l < n_unique_pws; l++) {
     sol = solve_lagrange_for_multiplier(inst, unique_pws[n_unique_pws - 1 - l]);
 
-    if(sol.used_capacity >= inst->capacity) { break; }
-
     total_time += sol.e_time;
-    if(sol.bound < best.bound) { best = sol; }
+    if(sol.bound < best.bound) { best = deep_copy_relaxation_solution(&sol); }
+    
+    if(sol.used_capacity <= inst->capacity) { break; }
   }
 
   free(unique_pws);
