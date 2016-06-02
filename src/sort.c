@@ -4,32 +4,38 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define SWAP(x,y) tmp = x; x = y; y = tmp;
-
-void sift_desc(const float* values, ptrdiff_t* ids, ptrdiff_t root, ptrdiff_t last) {
-  ptrdiff_t mchild, tmp;
-
-  while(2 * root <= last) {
-    if(2 * root == last) { mchild = last; }
-    else if(values[ids[2 * root]] < values[ids[2 * root + 1]]) { mchild = 2 * root; }
-    else { mchild = 2 * root + 1; }
-
-    if(values[ids[root]] > values[ids[mchild]]) {
-      SWAP(ids[root], ids[mchild])
-      root = mchild;
-    } else { break; }
-  }
-}
-
 void heapsort_desc(const float* values, ptrdiff_t* ids, ptrdiff_t sz) {
+  ptrdiff_t n = sz;
+  ptrdiff_t i = sz / 2;
+  ptrdiff_t parent;
+  ptrdiff_t child;
   ptrdiff_t tmp;
-
-  for(ptrdiff_t i = sz / 2 - 1; i >= 0; i--) { sift_desc(values, ids, i, sz - 1); }
-  for(ptrdiff_t i = sz - 1; i >= 1; i--) {
-    SWAP(ids[0], ids[i])
-    sift_desc(values, ids, 0, i - 1);
+  
+  while(true) {
+    if(i > 0) {
+      tmp = ids[--i];
+    } else {
+      if(--n == 0) { return; }
+      tmp = ids[n];
+      ids[n] = ids[0];
+    }
+    
+    parent = i;
+    child = 2 * i + 1;
+      
+    while(child < n) {
+      if(child < n - 1 && values[ids[child + 1]] < values[ids[child]]) { child++; }
+      if(values[ids[child]] < values[tmp]) {
+        ids[parent] = ids[child];
+        parent = child;
+        child = 2 * parent + 1;
+      } else { break; }
+    }
+     
+    ids[parent] = tmp;
   }
 }
+
 
 float* unique_desc(const float* values, ptrdiff_t sz, ptrdiff_t* unique_sz) {
   static const float eps = 1e-6;
