@@ -25,19 +25,32 @@ struct relaxation_solution solve_capacity_preserving_relaxation_for_bounds(const
 
   for(ptrdiff_t i = 0; i < inst->n_items; i++) { sol.coeff[i] = 0.0; }
 
-  ptrdiff_t last_inserted = ids[0];
-
   get_monotonic_time(&start);
+
+  ptrdiff_t first_skipped_black = inst->n_items;
+  ptrdiff_t first_skipped_white = inst->n_items;
 
   while(i < inst->n_items) {
     if(i_black >= maxb && i_white >= maxw) { break; }
 
     if(inst->colours[ids[i]] == WHITE) {
       if(i_white < maxw) { i_white++; }
-      else { i++; continue; }
+      else {
+        if(first_skipped_white == inst->n_items) {
+          first_skipped_white = ids[i];
+        }
+        i++;
+        continue;
+      }
     } else {
       if(i_black < maxb) { i_black++; }
-      else { i++; continue; }
+      else {
+        if(first_skipped_black == inst->n_items) {
+          first_skipped_black = ids[i];
+        }
+        i++;
+        continue;
+      }
     }
 
     assert(sol.used_capacity <= inst->capacity);
@@ -46,25 +59,32 @@ struct relaxation_solution solve_capacity_preserving_relaxation_for_bounds(const
       sol.coeff[ids[i]] = 1.0;
       sol.used_capacity += inst->weights[ids[i]];
       sol.profit += inst->profits[ids[i]];
-      last_inserted = ids[i];
     } else {
       double residual_capacity = inst->capacity - sol.used_capacity;
       sol.coeff[ids[i]] = residual_capacity / (double)inst->weights[ids[i]];
       sol.used_capacity += residual_capacity;
       sol.profit += (residual_capacity * (double)inst->profits[ids[i]]) / (double)inst->weights[ids[i]];
-      last_inserted = ids[i];
       break;
     }
 
     i++;
   }
 
-  if(sol.used_capacity < inst->capacity) {
-    double residual_capacity = inst->capacity - sol.used_capacity;
-    double item_weight = inst->weights[last_inserted];
+  if(sol.used_capacity < inst->capacity && i_black + i_white < inst->n_items) {
+    double residual_capacity = (double)inst->capacity - (double)sol.used_capacity;
 
-    sol.coeff[last_inserted] += residual_capacity / item_weight;
-    sol.profit += residual_capacity * inst->profits[last_inserted] / item_weight;
+    double pw_first_skipped_white = (first_skipped_white == inst->n_items) ?
+      0 : inst->pws[first_skipped_white];
+    double pw_first_skipped_black = (first_skipped_black == inst->n_items) ?
+      0 : inst->pws[first_skipped_black];
+
+    ptrdiff_t expanded_item = (pw_first_skipped_black > pw_first_skipped_white) ?
+      first_skipped_black : first_skipped_white;
+    double expanded_item_weight = (double)inst->weights[expanded_item];
+    double expanded_item_profit = (double)inst->profits[expanded_item];
+
+    sol.coeff[expanded_item] = residual_capacity / expanded_item_weight;
+    sol.profit += residual_capacity * expanded_item_profit / expanded_item_weight;
     sol.used_capacity = inst->capacity;
   }
 
@@ -108,12 +128,15 @@ struct relaxation_solution solve_capacity_preserving_relaxation(const struct ins
     if(sol1.profit > sol2.profit) {
       sol = sol1;
       sol.e_time += sol2.e_time;
+      sol.param = cap_bound;
     } else {
       sol = sol2;
       sol.e_time += sol1.e_time;
+      sol.param = cap_bound;
     }
   } else {
     sol = solve_capacity_preserving_relaxation_for_bounds(inst, maxb, maxw, ids);
+    sol.param = (maxb < maxw ? maxb : maxw);
   }
 
   sol.e_time += bound_time;
