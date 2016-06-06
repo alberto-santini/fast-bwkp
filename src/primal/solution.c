@@ -11,7 +11,7 @@ void print_primal_solution(const struct primal_solution* sol) {
   printf("\tTotal profit: %.4f\n", sol->profit);
   printf("\tUsed capacity: %.4f\n", sol->used_capacity);
   printf("\tTime (ms): %.4f\n", sol->e_time);
-  printf("\tOptimality gap: %.4f", sol->gap);
+  printf("\tOptimality gap: %.4f\n", sol->gap);
   printf("\tChosen items in best integer solution:\n");
   for(ptrdiff_t i = 0; i < sol->n_items; i++) {
     if(sol->coeff[i] > 0) {
