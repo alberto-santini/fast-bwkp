@@ -11,6 +11,6 @@ struct relaxation_solution solve_lagrange_relaxation(const struct instance* inst
 
 // Gives the lagrange relaxation solution for instance ins, using a certain multiplier.
 // It puts the lagrange objective value in lagr_obj.
-struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* inst, float multiplier);
+struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* inst, double multiplier);
 
 #endif

@@ -7,10 +7,10 @@
 
 struct relaxation_solution solve_lagrange_relaxation(const struct instance* inst) {
   ptrdiff_t n_unique_pws = 0;
-  float* unique_pws = unique_desc(inst->pws, inst->n_items, &n_unique_pws);
+  double* unique_pws = unique_desc(inst->pws, inst->n_items, &n_unique_pws);
 
   struct relaxation_solution sol = solve_lagrange_for_multiplier(inst, 0.0);
-  float total_time = sol.e_time;
+  double total_time = sol.e_time;
 
   if(sol.used_capacity <= inst->capacity) { return sol; }
 
@@ -41,9 +41,9 @@ struct relaxation_solution solve_lagrange_relaxation(const struct instance* inst
 #define OB(i) orig_id_black[ids_black[i]]
 #define OW(i) orig_id_white[ids_white[i]]
 
-struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* inst, float multiplier) {
-  float* lagr_p_black;
-  float* lagr_p_white;
+struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* inst, double multiplier) {
+  double* lagr_p_black;
+  double* lagr_p_white;
   uint_fast32_t* w_black;
   uint_fast32_t* w_white;
   uint_fast32_t* p_black;
@@ -71,7 +71,7 @@ struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* 
   ptrdiff_t i_black = 0, i_white = 0;
 
   for(ptrdiff_t i = 0; i < inst->n_items; i++) {
-    float lagr_profit = inst->profits[i] - multiplier * inst->weights[i];
+    double lagr_profit = inst->profits[i] - multiplier * inst->weights[i];
 
     if(inst->colours[i] == BLACK) {
       lagr_p_black[i_black] = lagr_profit;
@@ -111,7 +111,7 @@ struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* 
   i_black = 0;
   i_white = 0;
 
-  struct relaxation_solution sol = { .n_items = inst->n_items, .used_capacity = 0, .profit = 0, .bound = multiplier * (float)inst->capacity, .param = multiplier };
+  struct relaxation_solution sol = { .n_items = inst->n_items, .used_capacity = 0, .profit = 0, .bound = multiplier * (double)inst->capacity, .param = multiplier };
 
   sol.coeff = malloc(inst->n_items * sizeof(*(sol.coeff)));
   if(sol.coeff == NULL) {

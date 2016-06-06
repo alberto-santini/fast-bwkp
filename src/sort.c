@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void heapsort_desc(const float* values, ptrdiff_t* ids, ptrdiff_t sz) {
+void heapsort_desc(const double* values, ptrdiff_t* ids, ptrdiff_t sz) {
   ptrdiff_t n = sz;
   ptrdiff_t i = sz / 2;
   ptrdiff_t parent;
@@ -37,8 +37,8 @@ void heapsort_desc(const float* values, ptrdiff_t* ids, ptrdiff_t sz) {
 }
 
 
-float* unique_desc(const float* values, ptrdiff_t sz, ptrdiff_t* unique_sz) {
-  static const float eps = 1e-6;
+double* unique_desc(const double* values, ptrdiff_t sz, ptrdiff_t* unique_sz) {
+  static const double eps = 1e-6;
 
   ptrdiff_t* ids;
 
@@ -52,7 +52,7 @@ float* unique_desc(const float* values, ptrdiff_t sz, ptrdiff_t* unique_sz) {
 
   heapsort_desc(values, ids, sz);
 
-  float* unique;
+  double* unique;
 
   unique = malloc(sz * sizeof(*unique));
   if(unique == NULL) {

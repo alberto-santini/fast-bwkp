@@ -49,8 +49,8 @@ struct relaxation_solution solve_cardinality_preserving_relaxation_for_bounds(co
   }
 
   if(sol.used_capacity < inst->capacity) {
-    float residual_capacity = inst->capacity - sol.used_capacity;
-    float item_weight = inst->weights[last_inserted];
+    double residual_capacity = inst->capacity - sol.used_capacity;
+    double item_weight = inst->weights[last_inserted];
 
     sol.coeff[last_inserted] += residual_capacity / item_weight;
     sol.profit += residual_capacity * inst->profits[last_inserted] / item_weight;
@@ -85,7 +85,7 @@ struct relaxation_solution solve_cardinality_preserving_relaxation(const struct 
   uint_fast32_t cap_bound = get_capacity_bound(inst);
   get_monotonic_time(&end);
 
-  float bound_time = get_elapsed_time_ms(&start, &end);
+  double bound_time = get_elapsed_time_ms(&start, &end);
   struct relaxation_solution sol;
 
   if(cap_bound < maxb && cap_bound < maxw) {

@@ -111,7 +111,7 @@ struct instance read_instance(const char* filename) {
       exit(EXIT_FAILURE);
     }
 
-    inst.pws[i] = (float)inst.profits[i] / (float)inst.weights[i];
+    inst.pws[i] = (double)inst.profits[i] / (double)inst.weights[i];
   }
 
   if(fclose(fd) != 0) {

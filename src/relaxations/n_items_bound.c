@@ -6,8 +6,8 @@
 #include <stdio.h>
 
 uint_fast32_t get_capacity_bound(const struct instance* inst) {
-  float* w_black;
-  float* w_white;
+  double* w_black;
+  double* w_white;
   ptrdiff_t* ids_black;
   ptrdiff_t* ids_white;
 

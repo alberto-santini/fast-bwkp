@@ -30,7 +30,7 @@ struct instance {
 
   // For convenience, we store in this vector
   // the profit/weight ratios, one for each item
-  float* pws;
+  double* pws;
 };
 
 // Construct an instance from the data contained in

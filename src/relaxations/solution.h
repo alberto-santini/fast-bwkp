@@ -9,26 +9,26 @@ struct relaxation_solution {
   ptrdiff_t n_items;
 
   // Coefficients, one per item
-  float* coeff;
+  double* coeff;
 
   // Total profit
-  float profit;
+  double profit;
 
   // Total used capacity
-  float used_capacity;
+  double used_capacity;
 
   // Time used to find the solution
-  float e_time;
+  double e_time;
 
   // Bound provided by the relaxation
   // (it might not coincide with the total profit,
   // e.g. in case of lagrange relaxation)
-  float bound;
+  double bound;
 
   // Extra param linked with the solution
   // (it can be used to store additional information,
   // e.g. the lagrange multiplier used to find the solution)
-  float param;
+  double param;
 };
 
 // Frees the coefficient list.

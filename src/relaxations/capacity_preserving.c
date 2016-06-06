@@ -48,10 +48,10 @@ struct relaxation_solution solve_capacity_preserving_relaxation_for_bounds(const
       sol.profit += inst->profits[ids[i]];
       last_inserted = ids[i];
     } else {
-      float residual_capacity = inst->capacity - sol.used_capacity;
-      sol.coeff[ids[i]] = residual_capacity / (float)inst->weights[ids[i]];
+      double residual_capacity = inst->capacity - sol.used_capacity;
+      sol.coeff[ids[i]] = residual_capacity / (double)inst->weights[ids[i]];
       sol.used_capacity += residual_capacity;
-      sol.profit += (residual_capacity * (float)inst->profits[ids[i]]) / (float)inst->weights[ids[i]];
+      sol.profit += (residual_capacity * (double)inst->profits[ids[i]]) / (double)inst->weights[ids[i]];
       last_inserted = ids[i];
       break;
     }
@@ -60,8 +60,8 @@ struct relaxation_solution solve_capacity_preserving_relaxation_for_bounds(const
   }
 
   if(sol.used_capacity < inst->capacity) {
-    float residual_capacity = inst->capacity - sol.used_capacity;
-    float item_weight = inst->weights[last_inserted];
+    double residual_capacity = inst->capacity - sol.used_capacity;
+    double item_weight = inst->weights[last_inserted];
 
     sol.coeff[last_inserted] += residual_capacity / item_weight;
     sol.profit += residual_capacity * inst->profits[last_inserted] / item_weight;
@@ -96,7 +96,7 @@ struct relaxation_solution solve_capacity_preserving_relaxation(const struct ins
   uint_fast32_t cap_bound = get_capacity_bound(inst);
   get_monotonic_time(&end);
 
-  float bound_time = get_elapsed_time_ms(&start, &end);
+  double bound_time = get_elapsed_time_ms(&start, &end);
   struct relaxation_solution sol;
 
   if(cap_bound < maxb && cap_bound < maxw) {

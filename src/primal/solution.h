@@ -9,16 +9,16 @@ struct primal_solution {
   ptrdiff_t n_items;
 
   // Coefficients, one per item
-  float* coeff;
+  double* coeff;
 
   // Total profit
-  float profit;
+  double profit;
 
   // Total used capacity
-  float used_capacity;
+  double used_capacity;
 
   // Time used to find the solution
-  float e_time;
+  double e_time;
   
   // Optimality gap (if known)
   double gap;
