@@ -121,34 +121,69 @@ struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* 
 
   for(ptrdiff_t i = 0; i < inst->n_items; i++) { sol.coeff[i] = 0.0; }
 
+  // printf("\n\n\nMultiplier: %.4f\n", multiplier);
+  // printf("Black     White\n");
+  // for(ptrdiff_t i = 0, j = 0; ; i++, j++) {
+  //   if(i < inst->n_black) {
+  //     printf("%.4f ", LPB(i));
+  //   } else {
+  //     printf("       ");
+  //   }
+  //   if(j < inst->n_white) {
+  //     printf("%.4f\n", LPW(j));
+  //   } else {
+  //     printf("\n");
+  //   }
+  //   if(i >= inst->n_black && j >= inst->n_white) { break; }
+  // }
+
   while(i_black < inst->n_black && i_white < inst->n_white) {
-    if(LPB(i_black) + LPW(i_white) >= 0) {
+    // printf("Current b %.4f w %.4f\n", LPB(i_black), LPW(i_white));
+    
+    if(LPB(i_black) >= 0 && LPW(i_white) >= 0) {
+      // printf("\tTaking b %.4f w %.4f\n", LPB(i_black), LPW(i_white));
       sol.bound += LPB(i_black) + LPW(i_white);
       sol.used_capacity += WB(i_black) + WW(i_white);
       sol.profit += PB(i_black) + PW(i_white);
       sol.coeff[OB(i_black)] = 1.0;
       sol.coeff[OW(i_white)] = 1.0;
+      i_black++;
+      i_white++;
     } else {
-      if(LPB(i_black) >= 0) {
-        sol.bound += LPB(i_black);
-        sol.used_capacity += WB(i_black);
-        sol.profit += PB(i_black);
+      if(i_black == i_white) {
+        if(LPB(i_black) >= 0) {
+          // printf("\tTaking b %.4f\n", LPB(i_black));
+          sol.bound += LPB(i_black);
+          sol.used_capacity += WB(i_black);
+          sol.profit += PB(i_black);
+          sol.coeff[OB(i_black)] = 1.0;
+          i_black++;
+          continue;
+        }
+        if(LPW(i_white) >= 0) {
+          // printf("\tTaking w %.4f\n", LPW(i_white));
+          sol.bound += LPW(i_white);
+          sol.used_capacity += WW(i_white);
+          sol.profit += PW(i_white);
+          sol.coeff[OW(i_white)] = 1.0;
+          i_white++;
+          continue;
+        }
+      } else if(LPB(i_black) + LPW(i_white) >= 0) {
+        // printf("\tTaking b %.4f w %.4f\n", LPB(i_black), LPW(i_white));
+        sol.bound += LPB(i_black) + LPW(i_white);
+        sol.used_capacity += WB(i_black) + WW(i_white);
+        sol.profit += PB(i_black) + PW(i_white);
         sol.coeff[OB(i_black)] = 1.0;
-      }
-      if(LPW(i_white) >= 0) {
-        sol.bound += LPW(i_white);
-        sol.used_capacity += WW(i_white);
-        sol.profit += PW(i_white);
         sol.coeff[OW(i_white)] = 1.0;
-      }
-      break;
+        i_black++;
+        i_white++;
+      } else { break; }
     }
-
-    i_black++;
-    i_white++;
 
     if(i_white == inst->n_white && i_black < inst->n_black) {
       if(LPB(i_black) >= 0) {
+        // printf("\tTaking b %.4f - out of whites\n", LPB(i_black));
         sol.bound += LPB(i_black);
         sol.used_capacity += WB(i_black);
         sol.profit += PB(i_black);
@@ -159,6 +194,7 @@ struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* 
 
     if(i_black == inst->n_black && i_white < inst->n_white) {
       if(LPW(i_white) >= 0) {
+        // printf("\tTaking w %.4f - out of blacks\n", LPW(i_white));
         sol.bound += LPW(i_white);
         sol.used_capacity += WW(i_white);
         sol.profit += PW(i_white);
