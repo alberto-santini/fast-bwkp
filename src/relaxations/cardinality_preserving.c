@@ -106,5 +106,6 @@ struct relaxation_solution solve_cardinality_preserving_relaxation(const struct 
   sol.e_time += bound_time;
 
   free(ids);
+  free(profits);
   return sol;
 }
