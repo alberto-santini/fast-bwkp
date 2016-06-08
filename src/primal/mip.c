@@ -72,7 +72,7 @@ struct primal_solution solve_mip_primal(const struct instance* inst) {
   }
 
   status = CPXaddrows(env, lp, 0, 3, 3 * inst->n_items, rhs, sense, rmatbeg, rmatind, rmatval, NULL, NULL);
-  status = CPXsetdblparam(env, CPX_PARAM_TILIM, 300);
+  status = CPXsetdblparam(env, CPX_PARAM_TILIM, 10);
   status = CPXsetdblparam(env, CPX_PARAM_EPAGAP, 1e-12);
   status = CPXsetdblparam(env, CPX_PARAM_EPGAP, 0.0);
   status = CPXsetdblparam(env, CPX_PARAM_EPINT, 0.0);
