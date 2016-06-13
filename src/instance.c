@@ -126,7 +126,7 @@ void print_instance(const struct instance* inst) {
   printf("Number of items: %" PRIuFAST32 " (%" PRIuFAST32 " black and %" PRIuFAST32 " white)\n",
           inst->n_items, inst->n_black, inst->n_white);
   printf("Capacity: %" PRIuFAST32 "\n", inst->capacity);
-  printf("\tItem weights:\n");
+  printf("\nItem weights:\n");
   for(ptrdiff_t i = 0; i < inst->n_items; i++) {
     printf("\t%td: %" PRIuFAST32 "\n", i, inst->weights[i]);
   }
