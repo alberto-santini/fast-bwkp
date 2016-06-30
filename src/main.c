@@ -75,6 +75,25 @@ int main(int argc, char** argv) {
     fprintf(fp, "\n");
     fclose(fp);
     free_relaxation_solution(&sol);
+    free_primal_solution(&psol);
+  } else if(strcmp(argv[2], "testmip") == 0) {
+    FILE* fp;
+    fp = fopen(argv[3], "a");
+    
+    if(fp == NULL) {
+      printf("Can't open results file %s\n", argv[3]);
+    }
+    
+    fprintf(fp, "%s,%" PRIuFAST32 ",", argv[1], inst.n_items);
+    fprintf(fp, "%" PRIuFAST32 ",%" PRIuFAST32 ",", inst.n_black, inst.n_white);
+    fprintf(fp, "%" PRIuFAST32 ",", inst.capacity);
+    
+    psol = solve_mip_primal(&inst);
+    write_primal_solution_to_file(&psol, fp);
+    
+    fprintf(fp, "\n");
+    fclose(fp);
+    free_primal_solution(&psol);
   } else {
     printf("Command not recognised\n");
     exit(EXIT_FAILURE);
