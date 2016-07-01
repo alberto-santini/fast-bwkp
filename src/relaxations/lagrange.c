@@ -44,10 +44,10 @@ struct relaxation_solution solve_lagrange_relaxation(const struct instance* inst
 struct relaxation_solution solve_lagrange_for_multiplier(const struct instance* inst, double multiplier) {
   double* lagr_p_black;
   double* lagr_p_white;
-  uint_fast32_t* w_black;
-  uint_fast32_t* w_white;
-  uint_fast32_t* p_black;
-  uint_fast32_t* p_white;
+  uint_fast64_t* w_black;
+  uint_fast64_t* w_white;
+  uint_fast64_t* p_black;
+  uint_fast64_t* p_white;
   ptrdiff_t* orig_id_black;
   ptrdiff_t* orig_id_white;
 

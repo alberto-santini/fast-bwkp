@@ -8,22 +8,22 @@ enum colour_t { BLACK, WHITE };
 
 struct instance {
   // Total number of items
-  uint_fast32_t n_items;
+  uint_fast64_t n_items;
 
   // Number of black items
-  uint_fast32_t n_black;
+  uint_fast64_t n_black;
 
   // Number of white items
-  uint_fast32_t n_white;
+  uint_fast64_t n_white;
 
   // Total bin capacity
-  uint_fast32_t capacity;
+  uint_fast64_t capacity;
 
   // Vector of weights, one for each item
-  uint_fast32_t* weights;
+  uint_fast64_t* weights;
 
   // Vector of profits, one for each items
-  uint_fast32_t* profits;
+  uint_fast64_t* profits;
 
   // Vector of colours, one for each item
   enum colour_t* colours;

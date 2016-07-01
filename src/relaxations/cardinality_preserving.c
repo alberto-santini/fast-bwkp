@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-struct relaxation_solution solve_cardinality_preserving_relaxation_for_bounds(const struct instance* inst, uint_fast32_t maxb, uint_fast32_t maxw, const ptrdiff_t* ids) {
-  uint_fast32_t i_black = 0;
-  uint_fast32_t i_white = 0;
-  uint_fast32_t i = 0;
+struct relaxation_solution solve_cardinality_preserving_relaxation_for_bounds(const struct instance* inst, uint_fast64_t maxb, uint_fast64_t maxw, const ptrdiff_t* ids) {
+  uint_fast64_t i_black = 0;
+  uint_fast64_t i_white = 0;
+  uint_fast64_t i = 0;
 
   struct timespec start, end;
   struct relaxation_solution sol = { .n_items = inst->n_items, .profit = 0, .used_capacity = 0, .bound = 0, .param = 0 };

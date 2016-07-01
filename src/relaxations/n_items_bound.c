@@ -44,7 +44,7 @@ struct n_items_bound get_capacity_bound(const struct instance* inst) {
   heapsort_desc(w_white, ids_white, inst->n_white);
 
   ptrdiff_t couple_id = 0;
-  uint_fast32_t total_w = 0;
+  uint_fast64_t total_w = 0;
   
   #define FREE_ALL \
     free(w_black); \
@@ -56,8 +56,8 @@ struct n_items_bound get_capacity_bound(const struct instance* inst) {
     assert((int)inst->n_black - (int)couple_id >= 0);
     assert((int)inst->n_white - (int)couple_id >= 0);
     
-    uint_fast32_t weight_w = w_white[ids_white[inst->n_white - 1 - couple_id]];
-    uint_fast32_t weight_b = w_black[ids_black[inst->n_black - 1 - couple_id]];
+    uint_fast64_t weight_w = w_white[ids_white[inst->n_white - 1 - couple_id]];
+    uint_fast64_t weight_b = w_black[ids_black[inst->n_black - 1 - couple_id]];
     
     if(total_w + weight_w + weight_b <= inst->capacity) {
       // Case 1:
@@ -95,7 +95,7 @@ struct n_items_bound get_capacity_bound(const struct instance* inst) {
       return (struct n_items_bound){.black = couple_id, .white = couple_id, .type = BOUND_FIXED};
     } else if(couple_id == inst->n_black && couple_id < inst->n_white) {
       // Case 7: we ran out of black items, but not of white items
-      uint_fast32_t next_w = w_white[ids_white[inst->n_white - 1 - couple_id]];
+      uint_fast64_t next_w = w_white[ids_white[inst->n_white - 1 - couple_id]];
       if(total_w + next_w <= inst->capacity) {
         // Case 7a: we can pack one more white item
         FREE_ALL
@@ -107,7 +107,7 @@ struct n_items_bound get_capacity_bound(const struct instance* inst) {
       }
     } else if(couple_id == inst->n_white && couple_id < inst->n_black) {
       // Case 8: we ran out of white items, but not of black items
-      uint_fast32_t next_w = w_black[ids_black[inst->n_black - 1 - couple_id]];
+      uint_fast64_t next_w = w_black[ids_black[inst->n_black - 1 - couple_id]];
       if(total_w + next_w <= inst->capacity) {
         // Case 8a: we can pack one more black item
         FREE_ALL
