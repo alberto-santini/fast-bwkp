@@ -3,11 +3,29 @@
 
 #include "../instance.h"
 
-// Returns the maximum number K for which it is possible to pack K black *and*
-// K white items, without violating the capacity constraint. Therefore, K+1
-// is such that we cannot pack K+1 black and K+1 white items, but nothing can
-// be said about the possibility of packing K black and K+1 white, or K white
-// and K+1 black items.
-uint_fast32_t get_capacity_bound(const struct instance* inst);
+// Tells which type of bound we are dealing with:
+// - a FIXED bound tells us that we should pack exactly ``black''
+//   black and ``white'' white items.
+// - an ANY bound, tells us that we should try to pack both
+//   ``black'' black and ``white + 1'' white items, and ``black + 1''
+//   black and ``white'' white items.
+enum n_items_bound_type {
+    BOUND_FIXED,
+    BOUND_ANY
+};
+
+// Represents a bound on the number of objects that can be packed.
+struct n_items_bound {
+    // Number of black objects
+    ptrdiff_t black;
+    // Number of white objects
+    ptrdiff_t white;
+    // Bound type
+    enum n_items_bound_type type;
+};
+
+// Returns a bound on the number of objects that can be packed, based
+// on their capacities.
+struct n_items_bound get_capacity_bound(const struct instance* inst);
 
 #endif

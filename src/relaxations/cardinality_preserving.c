@@ -26,7 +26,6 @@ struct relaxation_solution solve_cardinality_preserving_relaxation_for_bounds(co
   for(ptrdiff_t i = 0; i < inst->n_items; i++) { sol.coeff[i] = 0.0; }
 
   get_monotonic_time(&start);
-
   while(i < inst->n_items) {
     if(i_black >= maxb && i_white >= maxw) { break; }
 
@@ -44,9 +43,10 @@ struct relaxation_solution solve_cardinality_preserving_relaxation_for_bounds(co
 
     i++;
   }
-
   get_monotonic_time(&end);
+
   sol.bound = sol.profit;
+  sol.param = maxb;
   sol.e_time = get_elapsed_time_ms(&start, &end);
 
   return sol;
@@ -74,23 +74,24 @@ struct relaxation_solution solve_cardinality_preserving_relaxation(const struct 
   }
   heapsort_desc(profits, ids, inst->n_items);
 
-  uint_fast32_t maxb = (inst->n_black < inst->n_white ? inst->n_black : inst->n_white + 1);
-  uint_fast32_t maxw = (inst->n_black < inst->n_white ? inst->n_black + 1 : inst->n_white);
-
   struct timespec start, end;
 
   get_monotonic_time(&start);
-  uint_fast32_t cap_bound = get_capacity_bound(inst);
+  struct n_items_bound cap_bound = get_capacity_bound(inst);
   get_monotonic_time(&end);
 
   double bound_time = get_elapsed_time_ms(&start, &end);
   struct relaxation_solution sol;
 
-  if(cap_bound < maxb && cap_bound < maxw) {
+  if(cap_bound.type == BOUND_FIXED) {
+    sol = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound.black, cap_bound.white, ids);
+  } else {
+    assert(cap_bound.type == BOUND_ANY);
+    
     struct relaxation_solution sol1, sol2;
 
-    sol1 = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound, cap_bound + 1, ids);
-    sol2 = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound + 1, cap_bound, ids);
+    sol1 = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound.black, cap_bound.white + 1, ids);
+    sol2 = solve_cardinality_preserving_relaxation_for_bounds(inst, cap_bound.black + 1, cap_bound.white, ids);
 
     if(sol1.profit > sol2.profit) {
       sol = sol1;
@@ -99,10 +100,8 @@ struct relaxation_solution solve_cardinality_preserving_relaxation(const struct 
       sol = sol2;
       sol.e_time += sol1.e_time;
     }
-  } else {
-    sol = solve_cardinality_preserving_relaxation_for_bounds(inst, maxb, maxw, ids);
   }
-
+  
   sol.e_time += bound_time;
 
   free(ids);

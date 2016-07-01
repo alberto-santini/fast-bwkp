@@ -3,9 +3,10 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 
-uint_fast32_t get_capacity_bound(const struct instance* inst) {
+struct n_items_bound get_capacity_bound(const struct instance* inst) {
   double* w_black;
   double* w_white;
   ptrdiff_t* ids_black;
@@ -44,19 +45,83 @@ uint_fast32_t get_capacity_bound(const struct instance* inst) {
 
   ptrdiff_t couple_id = 0;
   uint_fast32_t total_w = 0;
+  
+  #define FREE_ALL \
+    free(w_black); \
+    free(w_white); \
+    free(ids_black); \
+    free(ids_white);
 
   while(total_w <= inst->capacity && couple_id < inst->n_black && couple_id < inst->n_white) {
     assert((int)inst->n_black - (int)couple_id >= 0);
     assert((int)inst->n_white - (int)couple_id >= 0);
-    total_w += w_black[ids_black[inst->n_black - 1 - couple_id]];
-    total_w += w_white[ids_white[inst->n_white - 1 - couple_id]];
-    couple_id++;
+    
+    uint_fast32_t weight_w = w_white[ids_white[inst->n_white - 1 - couple_id]];
+    uint_fast32_t weight_b = w_black[ids_black[inst->n_black - 1 - couple_id]];
+    
+    if(total_w + weight_w + weight_b <= inst->capacity) {
+      // Case 1:
+      // Both items can be packed
+      total_w += weight_w + weight_b;
+      couple_id++;
+    } else if(total_w + weight_w > inst->capacity && total_w + weight_b > inst->capacity) {
+      // Case 2:
+      // No other item can be packed
+      FREE_ALL
+      return (struct n_items_bound){.black = couple_id, .white = couple_id, .type = BOUND_FIXED};
+    } else if(total_w + weight_w > inst->capacity && total_w + weight_b <= inst->capacity) {
+      // Case 3:
+      // We can pack the next black but not the next white item
+      FREE_ALL
+      return (struct n_items_bound){.black = couple_id + 1, .white = couple_id, .type = BOUND_FIXED};
+    } else if(total_w + weight_w <= inst->capacity && total_w + weight_b > inst->capacity) {
+      // Case 4:
+      // We can pack the next white but not the next black item
+      FREE_ALL
+      return (struct n_items_bound){.black = couple_id, .white = couple_id + 1, .type = BOUND_FIXED};
+    } else if(total_w + weight_w <= inst->capacity && total_w + weight_b <= inst->capacity) {
+      // Case 5:
+      // We can pack the next white or black item, but not both
+      FREE_ALL
+      return (struct n_items_bound){.black = couple_id, .white = couple_id, .type = BOUND_ANY};
+    } else {
+      // There should be no other case - for now! :)
+      assert(false);
+    }
+    
+    if(couple_id == inst->n_black && couple_id == inst->n_white) {
+      // Case 6: we ran out of items (both black and white at the same time)
+      FREE_ALL
+      return (struct n_items_bound){.black = couple_id, .white = couple_id, .type = BOUND_FIXED};
+    } else if(couple_id == inst->n_black && couple_id < inst->n_white) {
+      // Case 7: we ran out of black items, but not of white items
+      uint_fast32_t next_w = w_white[ids_white[inst->n_white - 1 - couple_id]];
+      if(total_w + next_w <= inst->capacity) {
+        // Case 7a: we can pack one more white item
+        FREE_ALL
+        return (struct n_items_bound){.black = couple_id, .white = couple_id + 1, .type = BOUND_FIXED};
+      } else {
+        // Case 7b: we cannot pack any more white items
+        FREE_ALL
+        return (struct n_items_bound){.black = couple_id, .white = couple_id, .type = BOUND_FIXED};
+      }
+    } else if(couple_id == inst->n_white && couple_id < inst->n_black) {
+      // Case 8: we ran out of white items, but not of black items
+      uint_fast32_t next_w = w_black[ids_black[inst->n_black - 1 - couple_id]];
+      if(total_w + next_w <= inst->capacity) {
+        // Case 8a: we can pack one more black item
+        FREE_ALL
+        return (struct n_items_bound){.black = couple_id + 1, .white = couple_id, .type = BOUND_FIXED};
+      } else {
+        // Case 8b: we cannot pack any more black items
+        FREE_ALL
+        return (struct n_items_bound){.black = couple_id, .white = couple_id, .type = BOUND_FIXED};
+      }
+    }
   }
-
-  free(w_black);
-  free(w_white);
-  free(ids_black);
-  free(ids_white);
-
-  return (total_w > inst->capacity ? couple_id - 1 : couple_id);
+  
+  // We should never get here!
+  FREE_ALL
+  assert(false);
+  return (struct n_items_bound){.black = 0, .white = 0, .type = 0};
 }
