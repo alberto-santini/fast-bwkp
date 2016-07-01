@@ -7,6 +7,11 @@ mkdir -p ${resultsdir}
 
 for dir in $(ls -d ../../data/*/)
 do
+    if [[ dir == *scripts* ]]
+    then
+        continue
+    fi
+    
     klass="$(basename ${dir})"
     outfile="${resultsdir}/${klass}.txt"
     scriptname="launch_${klass}.sh"
