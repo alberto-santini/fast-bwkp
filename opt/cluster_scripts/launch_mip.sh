@@ -7,7 +7,7 @@ mkdir -p ${resultsdir}
 
 for dir in $(ls -d ../../data/*/)
 do
-    if [[ dir == *scripts* ]]
+    if [[ ${dir} == *scripts* ]]
     then
         continue
     fi
