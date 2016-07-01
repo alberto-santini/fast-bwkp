@@ -18,7 +18,7 @@ struct instance read_instance(const char* filename) {
   struct instance inst;
   int n_read;
 
-  n_read = fscanf(fd, "%" SCNuFAST32 " %" SCNuFAST32 " %" SCNuFAST32 " %" SCNuFAST32, &inst.n_items, &inst.n_black, &inst.n_white, &inst.capacity);
+  n_read = fscanf(fd, "%" SCNuFAST32 " %" SCNuFAST32 " %" SCNuFAST32 " %" SCNuFAST32, &inst.n_items, &inst.n_white, &inst.n_black, &inst.capacity);
 
   if(n_read != 4) {
     printf("Error reading the for initial values\n");
