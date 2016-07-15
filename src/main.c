@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
     print_relaxation_solution(&sol);
     free_relaxation_solution(&sol);
   } else if(strcmp(argv[2], "testrelax") == 0) {
+    // --------- TEST ALL RELAXATIONS AND COMPARE WITH PRIMAL ---------
     FILE* fp;
     fp = fopen("results.txt", "a");
 
@@ -53,10 +54,9 @@ int main(int argc, char** argv) {
       exit(EXIT_FAILURE);
     }
 
-    fprintf(fp, "%s,%" PRIuFAST32 ",", argv[1], inst.n_items);
-    fprintf(fp, "%" PRIuFAST32 ",%" PRIuFAST32 ",", inst.n_black, inst.n_white);
-    fprintf(fp, "%" PRIuFAST32 ",", inst.capacity);
-
+    fprintf(fp, "%s,", argv[1]);
+    write_instance_to_file(&inst, fp);
+    
     sol = solve_continuous_relaxation(&inst);
     write_relaxation_solution_to_file(&sol, fp);
 
@@ -76,17 +76,37 @@ int main(int argc, char** argv) {
     fclose(fp);
     free_relaxation_solution(&sol);
     free_primal_solution(&psol);
-  } else if(strcmp(argv[2], "testmip") == 0) {
+  } else if(strcmp(argv[2], "testlagr") == 0) {
+    // --------- TEST LAGRANGE RELAXATION ---------
     FILE* fp;
     fp = fopen(argv[3], "a");
     
     if(fp == NULL) {
       printf("Can't open results file %s\n", argv[3]);
+      exit(EXIT_FAILURE);
     }
     
-    fprintf(fp, "%s,%" PRIuFAST32 ",", argv[1], inst.n_items);
-    fprintf(fp, "%" PRIuFAST32 ",%" PRIuFAST32 ",", inst.n_black, inst.n_white);
-    fprintf(fp, "%" PRIuFAST32 ",", inst.capacity);
+    fprintf(fp, "%s,", argv[1]);
+    write_instance_to_file(&inst, fp);
+    
+    sol = solve_lagrange_relaxation(&inst);
+    write_relaxation_solution_to_file(&sol, fp);
+    
+    fprintf(fp, "\n");
+    fclose(fp);
+    free_relaxation_solution(&sol);
+  } else if(strcmp(argv[2], "testmip") == 0) {
+    // --------- CALCULATE PRIMAL SOLUTION WITH MIP ---------
+    FILE* fp;
+    fp = fopen(argv[3], "a");
+    
+    if(fp == NULL) {
+      printf("Can't open results file %s\n", argv[3]);
+      exit(EXIT_FAILURE);
+    }
+    
+    fprintf(fp, "%s,", argv[1]);
+    write_instance_to_file(&inst, fp);
     
     psol = solve_mip_primal(&inst);
     write_primal_solution_to_file(&psol, fp);

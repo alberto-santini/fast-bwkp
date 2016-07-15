@@ -145,6 +145,12 @@ void print_instance(const struct instance* inst) {
   printf("\n");
 }
 
+void write_instance_to_file(const struct instance* inst, FILE* fp) {
+  fprintf(fp, "%" PRIuFAST64 ",", inst->n_items);
+  fprintf(fp, "%" PRIuFAST64 ",%" PRIuFAST64 ",", inst->n_black, inst->n_white);
+  fprintf(fp, "%" PRIuFAST64 ",", inst->capacity);
+}
+
 void free_instance(struct instance* inst) {
   free(inst->colours); inst->colours = NULL;
   free(inst->weights); inst->weights = NULL;

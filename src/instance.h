@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 
 enum colour_t { BLACK, WHITE };
 
@@ -39,6 +40,9 @@ struct instance read_instance(const char* filename);
 
 // Prints useful info on the instance to stdout.
 void print_instance(const struct instance* inst);
+
+// Writes basic instance info on file.
+void write_instance_to_file(const struct instance* inst, FILE* fp);
 
 // Deallocates dynamically-allocated arrays in the
 // instance
